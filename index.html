@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>로또번호 찍어주기</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #000000;
+    --navy2: #0A0A0A;
+    --navy3: #111111;
+    --blue: #C9A84C;
+    --blue-bright: #E8CC7A;
+    --blue-glow: #C9A84C;
+    --blue-light: #F5E6B8;
+    --blue-pale: #F5E6B8;
+    --cyan: #E8CC7A;
+    --white: #F0E6CC;
+    --text-muted: #6A5A3A;
+  }
+
+  body {
+    background: #000000;
+    color: var(--white);
+    font-family: 'Noto Sans KR', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,168,76,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 50% 100%, rgba(201,168,76,0.05) 0%, transparent 50%),
+      linear-gradient(160deg, #0a0a0a 0%, #000000 40%, #0d0d0d 100%);
+    pointer-events: none;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 680px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .header { text-align: center; }
+
+  .icon-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #8B6914 0%, #C9A84C 50%, #E8CC7A 100%);
+    box-shadow: 0 0 0 1px rgba(201,168,76,0.5), 0 0 24px rgba(201,168,76,0.4), 0 0 60px rgba(201,168,76,0.15);
+    margin-bottom: 1rem;
+    animation: pulse 3s ease-in-out infinite;
+    font-size: 1.8rem;
+    position: relative;
+  }
+  .icon-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    filter: blur(4px);
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 1px rgba(201,168,76,0.5), 0 0 24px rgba(201,168,76,0.4), 0 0 60px rgba(201,168,76,0.15); }
+    50%       { box-shadow: 0 0 0 1px rgba(232,204,122,0.6), 0 0 36px rgba(232,204,122,0.5), 0 0 80px rgba(201,168,76,0.25); }
+  }
+
+  .title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 6vw, 3rem);
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    background: linear-gradient(135deg, #F5E6B8 0%, #C9A84C 40%, #8B6914 70%, #E8CC7A 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.15;
+    filter: drop-shadow(0 0 20px rgba(201,168,76,0.3));
+  }
+
+  .subtitle {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  .divider { display: flex; align-items: center; gap: 0.75rem; margin-top: 1rem; }
+  .divider-line { flex: 1; height: 1px; background: linear-gradient(to right, transparent, rgba(201,168,76,0.5), transparent); }
+  .divider-dot { width: 5px; height: 5px; border-radius: 50%; background: #C9A84C; box-shadow: 0 0 8px #C9A84C, 0 0 16px rgba(201,168,76,0.4); }
+
+  .tabs {
+    display: flex;
+    width: 100%;
+    max-width: 400px;
+    background: #111111;
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 8px;
+    overflow: hidden;
+    padding: 4px;
+    gap: 4px;
+  }
+  .tab {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 0.65rem 0.5rem;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.25s;
+  }
+  .tab.active { background: linear-gradient(135deg, #8B6914 0%, #C9A84C 100%); color: #000; box-shadow: 0 2px 12px rgba(201,168,76,0.3); }
+  .tab:hover:not(.active) { color: #C9A84C; }
+
+  .panel { display: none; width: 100%; flex-direction: column; align-items: center; gap: 1.25rem; }
+  .panel.active { display: flex; }
+
+  .game-selector {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: #111111;
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+  }
+  .game-selector label { font-size: 0.78rem; letter-spacing: 0.12em; color: var(--text-muted); font-weight: 600; }
+  .game-btns { display: flex; gap: 0.4rem; }
+  .game-btn {
+    width: 38px; height: 38px;
+    background: transparent;
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 6px;
+    color: var(--text-muted);
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .game-btn:hover { border-color: #C9A84C; color: #E8CC7A; }
+  .game-btn.active { background: linear-gradient(135deg, #8B6914 0%, #C9A84C 100%); border-color: #C9A84C; color: #000; font-weight: 700; box-shadow: 0 0 12px rgba(201,168,76,0.4); }
+
+  .birth-box {
+    width: 100%;
+    background: #111111;
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .birth-box label { font-size: 0.78rem; letter-spacing: 0.12em; color: var(--text-muted); font-weight: 600; }
+  .birth-input-row { display: flex; gap: 0.5rem; align-items: center; }
+  .birth-input {
+    flex: 1;
+    background: #000;
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 6px;
+    color: #F5E6B8;
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    padding: 0.6rem 0.75rem;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+  }
+  .birth-input:focus { border-color: #C9A84C; box-shadow: 0 0 0 2px rgba(201,168,76,0.12); }
+  .birth-input::placeholder { color: var(--text-muted); font-size: 0.72rem; font-family: 'Noto Sans KR', sans-serif; }
+  .birth-sep { color: var(--text-muted); font-size: 1.1rem; }
+  .birth-hint { font-size: 0.72rem; color: var(--text-muted); line-height: 1.6; }
+
+  .results { width: 100%; display: flex; flex-direction: column; gap: 0.85rem; min-height: 60px; }
+
+  .game-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: #111111;
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s, transform 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+  .game-row::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(201,168,76,0.4), transparent);
+  }
+  .game-row.show { opacity: 1; transform: translateY(0); }
+
+  .game-label { font-size: 0.7rem; letter-spacing: 0.15em; color: var(--text-muted); font-weight: 700; min-width: 36px; text-transform: uppercase; }
+  .balls { display: flex; gap: 0.5rem; flex-wrap: wrap; flex: 1; }
+
+  .ball {
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1rem;
+    position: relative;
+    transform: scale(0);
+    transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+    flex-shrink: 0;
+    cursor: default;
+    user-select: none;
+  }
+  .ball.pop { transform: scale(1); }
+
+  .b1 { background: radial-gradient(circle at 35% 35%, #FFE066, #E8A800 55%, #B07A00); color: #3a2200; box-shadow: 0 3px 14px rgba(232,168,0,0.55), inset 0 -2px 4px rgba(0,0,0,0.2); }
+  .b2 { background: radial-gradient(circle at 35% 35%, #80BBFF, #2E6FFF 55%, #0A3DB5); color: #fff; box-shadow: 0 3px 14px rgba(46,111,255,0.55), inset 0 -2px 4px rgba(0,0,0,0.2); }
+  .b3 { background: radial-gradient(circle at 35% 35%, #FF9090, #E83030 55%, #A00F0F); color: #fff; box-shadow: 0 3px 14px rgba(232,48,48,0.55), inset 0 -2px 4px rgba(0,0,0,0.2); }
+  .b4 { background: radial-gradient(circle at 35% 35%, #80EE80, #22BB22 55%, #0A7A0A); color: #fff; box-shadow: 0 3px 14px rgba(34,187,34,0.55), inset 0 -2px 4px rgba(0,0,0,0.2); }
+  .b5 { background: radial-gradient(circle at 35% 35%, #D0A0FF, #8833EE 55%, #5500BB); color: #fff; box-shadow: 0 3px 14px rgba(136,51,238,0.55), inset 0 -2px 4px rgba(0,0,0,0.2); }
+
+  .ball::after {
+    content: '';
+    position: absolute;
+    top: 14%; left: 18%;
+    width: 38%; height: 28%;
+    background: rgba(255,255,255,0.45);
+    border-radius: 50%;
+    filter: blur(2px);
+    pointer-events: none;
+  }
+
+  .btn-extract {
+    position: relative;
+    background: linear-gradient(135deg, #8B6914 0%, #C9A84C 50%, #E8CC7A 100%);
+    border: none;
+    color: #000;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 1rem 3.5rem;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.25s;
+    box-shadow: 0 4px 20px rgba(201,168,76,0.4), 0 0 40px rgba(201,168,76,0.1);
+    overflow: hidden;
+  }
+  .btn-extract::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 60%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+    transition: left 0.5s;
+  }
+  .btn-extract:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(201,168,76,0.55), 0 0 60px rgba(201,168,76,0.2); }
+  .btn-extract:hover::before { left: 150%; }
+  .btn-extract:active { transform: translateY(0) scale(0.98); }
+  .btn-extract span { position: relative; z-index: 1; }
+
+  .copy-row { display: flex; justify-content: center; opacity: 0; transition: opacity 0.4s; }
+  .copy-row.show { opacity: 1; }
+  .btn-copy {
+    background: transparent;
+    border: 1px solid rgba(201,168,76,0.35);
+    color: var(--text-muted);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    padding: 0.55rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 6px;
+  }
+  .btn-copy:hover { border-color: #C9A84C; color: #E8CC7A; background: rgba(201,168,76,0.06); }
+
+  .toast {
+    position: fixed;
+    bottom: 2rem; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #111111;
+    border: 1px solid rgba(201,168,76,0.35);
+    color: #E8CC7A;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 0.65rem 1.75rem;
+    border-radius: 8px;
+    opacity: 0;
+    transition: all 0.3s;
+    pointer-events: none;
+    z-index: 100;
+    white-space: nowrap;
+    box-shadow: 0 4px 20px rgba(201,168,76,0.2);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .footer { font-size: 0.7rem; color: var(--text-muted); letter-spacing: 0.06em; text-align: center; line-height: 2; }
+
+  @media (max-width: 480px) {
+    .ball { width: 40px; height: 40px; font-size: 0.9rem; }
+    .balls { gap: 0.4rem; }
+    .btn-extract { padding: 0.9rem 2.5rem; }
+    .game-selector { padding: 0.65rem 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <div class="header">
+    <div class="icon-wrap">🎱</div>
+    <h1 class="title">로또번호 찍어주기</h1>
+    <p class="subtitle">Lucky Lotto Number Generator</p>
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-dot"></div>
+      <div class="divider-line"></div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('random')">🎲 랜덤 추출</button>
+    <button class="tab" onclick="switchTab('birth')">✨ 생년월일 행운번호</button>
+  </div>
+
+  <div class="panel active" id="panel-random">
+    <div class="game-selector">
+      <label>게임 수</label>
+      <div class="game-btns">
+        <button class="game-btn active" data-n="1">1</button>
+        <button class="game-btn" data-n="2">2</button>
+        <button class="game-btn" data-n="3">3</button>
+        <button class="game-btn" data-n="5">5</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-birth">
+    <div class="birth-box">
+      <label>생년월일 입력</label>
+      <div class="birth-input-row">
+        <input class="birth-input" id="byear" type="number" placeholder="년도 (예: 1990)" min="1900" max="2024">
+        <span class="birth-sep">·</span>
+        <input class="birth-input" id="bmonth" type="number" placeholder="월" min="1" max="12" style="max-width:80px">
+        <span class="birth-sep">·</span>
+        <input class="birth-input" id="bday" type="number" placeholder="일" min="1" max="31" style="max-width:80px">
+      </div>
+      <p class="birth-hint">※ 생년월일을 기반으로 나만의 행운 번호를 생성합니다. 재미로 즐겨주세요 🍀</p>
+    </div>
+  </div>
+
+  <div class="results" id="results"></div>
+
+  <div class="copy-row" id="copyRow">
+    <button class="btn-copy" id="copyBtn">📋 번호 복사하기</button>
+  </div>
+
+  <button class="btn-extract" id="extractBtn">
+    <span id="btnLabel">🎯 번호 찍어주기</span>
+  </button>
+
+  <div class="footer">
+    1 – 45 사이 무작위 추출 &nbsp;·&nbsp; 이번 주 꼭 당첨되세요! 🍀<br>
+    본 서비스는 오락 목적이며 당첨을 보장하지 않습니다
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  let gameCount = 1;
+  let currentTab = 'random';
+  let lastNumbers = [];
+
+  function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.tab').forEach((t, i) => {
+      t.classList.toggle('active', (i === 0 && tab === 'random') || (i === 1 && tab === 'birth'));
+    });
+    document.getElementById('panel-random').classList.toggle('active', tab === 'random');
+    document.getElementById('panel-birth').classList.toggle('active', tab === 'birth');
+    document.getElementById('btnLabel').textContent = tab === 'random' ? '🎯 번호 찍어주기' : '✨ 행운번호 생성하기';
+    clearResults();
+  }
+
+  function clearResults() {
+    document.getElementById('results').innerHTML = '';
+    document.getElementById('copyRow').classList.remove('show');
+    lastNumbers = [];
+  }
+
+  document.querySelectorAll('.game-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.game-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      gameCount = parseInt(btn.dataset.n);
+    });
+  });
+
+  function ballClass(n) {
+    if (n <= 9)  return 'b1';
+    if (n <= 19) return 'b2';
+    if (n <= 29) return 'b3';
+    if (n <= 39) return 'b4';
+    return 'b5';
+  }
+
+  function pickRandom() {
+    const pool = Array.from({length: 45}, (_, i) => i + 1);
+    const picked = [];
+    while (picked.length < 6) {
+      const idx = Math.floor(Math.random() * pool.length);
+      picked.push(pool.splice(idx, 1)[0]);
+    }
+    return picked.sort((a, b) => a - b);
+  }
+
+  function pickByBirth(year, month, day) {
+    const seed = year * 10000 + month * 100 + day + Date.now() % 1000;
+    function sr(s) { let x = Math.sin(s) * 99999; return x - Math.floor(x); }
+    const pool = Array.from({length: 45}, (_, i) => i + 1);
+    const picked = [];
+    let s = seed;
+    while (picked.length < 6) { s++; picked.push(pool.splice(Math.floor(sr(s) * pool.length), 1)[0]); }
+    return picked.sort((a, b) => a - b);
+  }
+
+  function renderNumbers(numsList) {
+    const results = document.getElementById('results');
+    results.innerHTML = '';
+    document.getElementById('copyRow').classList.remove('show');
+    lastNumbers = numsList;
+
+    numsList.forEach((nums, g) => {
+      const row = document.createElement('div');
+      row.className = 'game-row';
+      const label = numsList.length > 1 ? `${g + 1}게임` : '번호';
+      row.innerHTML = `<span class="game-label">${label}</span><div class="balls" id="balls-${g}"></div>`;
+      results.appendChild(row);
+
+      setTimeout(() => {
+        row.classList.add('show');
+        const ballsEl = document.getElementById(`balls-${g}`);
+        nums.forEach((n, i) => {
+          setTimeout(() => {
+            const ball = document.createElement('div');
+            ball.className = `ball ${ballClass(n)}`;
+            ball.textContent = n;
+            ballsEl.appendChild(ball);
+            requestAnimationFrame(() => requestAnimationFrame(() => ball.classList.add('pop')));
+          }, i * 110);
+        });
+      }, g * 160);
+    });
+
+    setTimeout(() => document.getElementById('copyRow').classList.add('show'), numsList.length * 160 + 750);
+  }
+
+  document.getElementById('extractBtn').addEventListener('click', () => {
+    if (currentTab === 'random') {
+      const nums = [];
+      for (let i = 0; i < gameCount; i++) nums.push(pickRandom());
+      renderNumbers(nums);
+    } else {
+      const year  = parseInt(document.getElementById('byear').value);
+      const month = parseInt(document.getElementById('bmonth').value);
+      const day   = parseInt(document.getElementById('bday').value);
+      if (!year || !month || !day || year < 1900 || year > 2024 || month < 1 || month > 12 || day < 1 || day > 31) {
+        showToast('생년월일을 올바르게 입력해주세요'); return;
+      }
+      renderNumbers([pickByBirth(year, month, day)]);
+    }
+  });
+
+  document.getElementById('copyBtn').addEventListener('click', () => {
+    if (!lastNumbers.length) return;
+    const text = lastNumbers.length === 1
+      ? '로또번호: ' + lastNumbers[0].join(', ')
+      : lastNumbers.map((n, i) => `${i+1}게임: ${n.join(', ')}`).join('\n');
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => showToast('클립보드에 복사되었습니다 ✓')).catch(() => fallbackCopy(text));
+    } else {
+      fallbackCopy(text);
+    }
+  });
+
+  function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    try { document.execCommand('copy'); showToast('클립보드에 복사되었습니다 ✓'); }
+    catch(e) { showToast('번호를 직접 선택해서 복사해주세요'); }
+    document.body.removeChild(ta);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  window.addEventListener('load', () => setTimeout(() => document.getElementById('extractBtn').click(), 500));
+</script>
+</body>
+</html>
