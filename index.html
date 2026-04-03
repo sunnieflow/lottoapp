@@ -339,7 +339,48 @@
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-  .footer { font-size: 0.7rem; color: var(--text-muted); letter-spacing: 0.06em; text-align: center; line-height: 2; }
+  .footer { font-size: 0.72rem; color: #888; letter-spacing: 0.06em; text-align: center; line-height: 2; }
+
+  .game-selector label { font-size: 0.78rem; letter-spacing: 0.12em; color: #aaa; font-weight: 600; }
+  .game-label { font-size: 0.7rem; letter-spacing: 0.15em; color: #999; font-weight: 700; min-width: 36px; text-transform: uppercase; }
+  .birth-box label { font-size: 0.78rem; letter-spacing: 0.12em; color: #aaa; font-weight: 600; }
+  .birth-hint { font-size: 0.72rem; color: #888; line-height: 1.6; }
+  .birth-sep { color: #888; font-size: 1.1rem; }
+  .birth-input { color: #F5E6B8; }
+  .tab { color: #999; }
+  .subtitle { color: #888; }
+
+  .btn-site {
+    display: block;
+    width: 100%;
+    background: linear-gradient(135deg, #8B0000 0%, #CC0000 50%, #FF2222 100%);
+    border: none;
+    color: #fff;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.9rem 2rem;
+    cursor: pointer;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.25s;
+    box-shadow: 0 4px 20px rgba(200,0,0,0.4), 0 0 40px rgba(200,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-site::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 60%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+  .btn-site:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(200,0,0,0.55); }
+  .btn-site:hover::before { left: 150%; }
+  .btn-site:active { transform: scale(0.98); }
 
   @media (max-width: 480px) {
     .ball { width: 40px; height: 40px; font-size: 0.9rem; }
@@ -404,6 +445,10 @@
   <button class="btn-extract" id="extractBtn">
     <span id="btnLabel">🎯 번호 찍어주기</span>
   </button>
+
+  <a class="btn-site" href="https://www.headline114.com/" target="_blank">
+    ▶ 일문일도 사주연구원 방문하기
+  </a>
 
   <div class="footer">
     1 – 45 사이 무작위 추출 &nbsp;·&nbsp; 이번 주 꼭 당첨되세요! 🍀<br>
