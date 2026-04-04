@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>로또번호 찍어주기</title>
+<title>내맘속 로또번호</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -396,7 +396,7 @@
 
   <div class="header">
     <div class="icon-wrap">🎱</div>
-    <h1 class="title">로또번호 찍어주기</h1>
+    <h1 class="title">내맘속 로또번호</h1>
     <p class="subtitle">Lucky Lotto Number Generator</p>
     <div class="divider">
       <div class="divider-line"></div>
@@ -443,7 +443,7 @@
   </div>
 
   <button class="btn-extract" id="extractBtn">
-    <span id="btnLabel">🎯 번호 찍어주기</span>
+    <span id="btnLabel">✦ 내맘속 번호 ✦</span>
   </button>
 
   <a class="btn-site" href="https://www.headline114.com/" target="_blank">
@@ -471,7 +471,7 @@
     });
     document.getElementById('panel-random').classList.toggle('active', tab === 'random');
     document.getElementById('panel-birth').classList.toggle('active', tab === 'birth');
-    document.getElementById('btnLabel').textContent = tab === 'random' ? '🎯 번호 찍어주기' : '✨ 행운번호 생성하기';
+    document.getElementById('btnLabel').textContent = tab === 'random' ? '✦ 내맘속 번호 ✦' : '✦ 내맘속 번호 ✦';
     clearResults();
   }
 
