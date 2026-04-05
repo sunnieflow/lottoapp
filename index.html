@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>내맘속 로또번호</title>
+<title>내맘속 행운번호</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -396,8 +396,8 @@
 
   <div class="header">
     <div class="icon-wrap">🎱</div>
-    <h1 class="title">내맘속 로또번호</h1>
-    <p class="subtitle">Lucky Lotto Number Generator</p>
+    <h1 class="title">내맘속 행운번호</h1>
+    <p class="subtitle">Lucky Number Generator</p>
     <div class="divider">
       <div class="divider-line"></div>
       <div class="divider-dot"></div>
@@ -406,13 +406,13 @@
   </div>
 
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('random')">🎲 랜덤 추출</button>
+    <button class="tab active" onclick="switchTab('random')">🎲 랜덤 생성</button>
     <button class="tab" onclick="switchTab('birth')">✨ 생년월일 행운번호</button>
   </div>
 
   <div class="panel active" id="panel-random">
     <div class="game-selector">
-      <label>게임 수</label>
+      <label>세트 개수</label>
       <div class="game-btns">
         <button class="game-btn active" data-n="1">1</button>
         <button class="game-btn" data-n="2">2</button>
@@ -451,8 +451,8 @@
   </a>
 
   <div class="footer">
-    1 – 45 사이 무작위 추출 &nbsp;·&nbsp; 이번 주 꼭 당첨되세요! 🍀<br>
-    본 서비스는 오락 목적이며 당첨을 보장하지 않습니다
+    1–45 사이 무작위 생성된 오늘의 행운 숫자 🍀<br>
+    본 서비스는 재미를 위한 랜덤 숫자입니다.
   </div>
 
 </div>
@@ -526,7 +526,7 @@
     numsList.forEach((nums, g) => {
       const row = document.createElement('div');
       row.className = 'game-row';
-      const label = numsList.length > 1 ? `${g + 1}게임` : '번호';
+      const label = numsList.length > 1 ? `${g + 1}세트` : '번호';
       row.innerHTML = `<span class="game-label">${label}</span><div class="balls" id="balls-${g}"></div>`;
       results.appendChild(row);
 
